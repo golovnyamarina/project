@@ -51,4 +51,50 @@ class CalculatorApp(Tk):
             except Exception as e:
                 self.display.delete(0, END)
                 self.display.insert(END, f'Ошибка: {e}')
+class Calculator:
+    def __init__(self):
+        self.current_value = ''  # Текущая введённая строка
+        self.expecting_argument = False  
+    
+    def process_input(self, key):
+        if key == '=':
+            return self.calculate_expression()
+        elif key == 'C':
+            self.current_value = ''
+            self.expecting_argument = False
+        elif key in ['sin', 'cos', 'tan', 'exp', 'cot', 'log']:  # Нажата кнопка функции
+            # Ставим скобку автоматически
+            self.current_value += key + '('
+            self.expecting_argument = True  # Ждем аргумент
+        else:
+            self.current_value += key
+        
+        return self.current_value
+    
+    def calculate_expression(self):
+        try:
+            # Специальные функции с дополнительной обработкой
+            special_funcs = {
+                'sin(': lambda x: math.sin(float(x)),
+                'cos(': lambda x: math.cos(float(x)),
+                'tan(': lambda x: math.tan(float(x)),
+                'exp(': lambda x: math.exp(float(x)),
+                'cot(': lambda x: 1 / math.tan(float(x)),
+                'log(': lambda x: math.log(float(x))
+            }
+            
+            for func_str, func in special_funcs.items():
+                if func_str in self.current_value:
+                    start_idx = self.current_value.find(func_str)
+                    end_idx = self.current_value.find(')')
+                    
+                    # Получаем аргумент функции
+                    argument = self.current_value[start_idx + len(func_str):end_idx]
+                    result = func(argument.strip())
+                    return round(result, 4)
+            
+            # Обычные арифметические операции
+            return round(eval(self.current_value), 4)
+        except Exception as e:
+            return f'Ошибка: {e}'
     
