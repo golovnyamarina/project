@@ -26,7 +26,7 @@ class CalculatorApp(Tk):
             'sin', 'cos', 'tan', 'exp',
             'cot', 'log'
         ]
-        
+        self.bind('<Return>', lambda event=None: self.on_button_click('='))
         row_val = 1
         col_val = 0
         for button_text in buttons:
