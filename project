@@ -15,3 +15,40 @@ class CalculatorApp(Tk):
         # Создание дисплея
         self.display = Entry(self, font=('Arial', 20))
         self.display.grid(row=0, column=0, columnspan=4)
+
+# Добавляем кнопки
+        buttons = [
+            'C', 'Back', '(', ')',
+            '7', '8', '9', '/',
+            '4', '5', '6', '*',
+            '1', '2', '3', '-',
+            '0', '.', '=', '+',
+            'sin', 'cos', 'tan', 'exp',
+            'cot', 'log'
+        ]
+        
+        row_val = 1
+        col_val = 0
+        for button_text in buttons:
+            Button(self, text=button_text, width=5, height=2,
+                   command=lambda t=button_text: self.on_button_click(t)).grid(row=row_val, column=col_val)
+            
+            col_val += 1
+            if col_val > 3:
+                col_val = 0
+                row_val += 1
+    def on_button_click(self, key):
+            try:
+                if key == 'Back':  # Удаляем последний символ
+                    current_display = self.display.get()
+                    new_value = current_display[:-1]
+                    self.display.delete(0, END)
+                    self.display.insert(END, new_value)
+                else:
+                    result = self.calculator.process_input(key)
+                    self.display.delete(0, END)
+                    self.display.insert(END, str(result))
+            except Exception as e:
+                self.display.delete(0, END)
+                self.display.insert(END, f'Ошибка: {e}')
+    
