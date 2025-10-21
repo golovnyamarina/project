@@ -1,0 +1,17 @@
+import math
+from tkinter import *
+
+class CalculatorApp(Tk):
+    def __init__(self):
+        super().__init__()
+        
+        # Настройка окна
+        self.title("Научный калькулятор")
+        self.geometry("350x350") 
+        
+        # Инициализация калькулятора
+        self.calculator = Calculator()
+        
+        # Создание дисплея
+        self.display = Entry(self, font=('Arial', 20))
+        self.display.grid(row=0, column=0, columnspan=4)
