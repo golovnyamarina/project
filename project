@@ -15,8 +15,11 @@ class CalculatorApp(Tk):
         # Создание дисплея
         self.display = Entry(self, font=('Arial', 20))
         self.display.grid(row=0, column=0, columnspan=4)
-
-# Добавляем кнопки
+        
+        # Привязываем клавишу Enter к выполнению вычислений
+        self.bind('<Return>', lambda event=None: self.on_button_click('='))
+        
+        # Добавляем кнопки
         buttons = [
             'C', 'Back', '(', ')',
             '7', '8', '9', '/',
@@ -26,7 +29,7 @@ class CalculatorApp(Tk):
             'sin', 'cos', 'tan', 'exp',
             'cot', 'log'
         ]
-        self.bind('<Return>', lambda event=None: self.on_button_click('='))
+        
         row_val = 1
         col_val = 0
         for button_text in buttons:
@@ -37,20 +40,22 @@ class CalculatorApp(Tk):
             if col_val > 3:
                 col_val = 0
                 row_val += 1
+    
     def on_button_click(self, key):
-            try:
-                if key == 'Back':  # Удаляем последний символ
-                    current_display = self.display.get()
-                    new_value = current_display[:-1]
-                    self.display.delete(0, END)
-                    self.display.insert(END, new_value)
-                else:
-                    result = self.calculator.process_input(key)
-                    self.display.delete(0, END)
-                    self.display.insert(END, str(result))
-            except Exception as e:
+        try:
+            if key == 'Back':  # Удаляем последний символ
+                current_display = self.display.get()
+                new_value = current_display[:-1]
                 self.display.delete(0, END)
-                self.display.insert(END, f'Ошибка: {e}')
+                self.display.insert(END, new_value)
+            else:
+                result = self.calculator.process_input(key)
+                self.display.delete(0, END)
+                self.display.insert(END, str(result))
+        except Exception as e:
+            self.display.delete(0, END)
+            self.display.insert(END, f'Ошибка: {e}')
+
 class Calculator:
     def __init__(self):
         self.current_value = ''  # Текущая введённая строка
@@ -97,4 +102,7 @@ class Calculator:
             return round(eval(self.current_value), 4)
         except Exception as e:
             return f'Ошибка: {e}'
-    
+
+if __name__ == "__main__":
+    app = CalculatorApp()
+    app.mainloop()
